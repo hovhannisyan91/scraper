@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 from urllib.request import urlopen, Request
-import pandas as 
+import pandas as pd
 import re
 # import socks
 # import socket
@@ -94,4 +94,5 @@ if __name__=='__main__':
         CompN.get_phone()
         CompN.e_addresses()
         L.append(pd.DataFrame([CompN.data]))
+    
     pd.concat(L).to_csv('spyur_data.csv',index=False)
