@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from urllib.request import urlopen, Request
 import pandas as pd
 import re
+import requests
 # import socks
 # import socket
 
@@ -72,9 +73,14 @@ class Spyur:
 if __name__=='__main__':
     counter=1
     ListOfAllUrls=[]
-    while counter<20:
-        
-        url=f'https://www.spyur.am/am/yellow_pages-{counter}/yp/424/'
+    # industry={
+    #     'esthetics':' https://www.spyur.am/am/yellow_pages-{counter}/yp/2682/ '
+    # }
+    while counter<4:
+        #! Clinics
+        #! Plastic surgery
+        #! Hair
+        url=f'https://www.spyur.am/am/home/search-{counter}/?company_name=%D4%B7%D5%BD%D5%A9%D5%A5%D5%BF%D5%AB%D5%AF+%D5%A2%D5%AA%D5%B7%D5%AF%D5%B8%D6%82%D5%A9%D5%B5%D5%A1%D5%B6+%D5%AF%D5%A5%D5%B6%D5%BF%D6%80%D5%B8%D5%B6'
         Inst=Spyur(url)
         Inst._get_urls()
         ListOfAllUrls.append(Inst.urls)
@@ -88,11 +94,13 @@ if __name__=='__main__':
     L=[]
     for i in ListOfUrls:
         CompN=Spyur(i)
-        print(i)
+        # print(i)
         CompN.get_name()
         CompN.get_address()
         CompN.get_phone()
         CompN.e_addresses()
         L.append(pd.DataFrame([CompN.data]))
     
-    pd.concat(L).to_csv('spyur_data.csv',index=False)
+    data=pd.concat(L)
+    print(data.shape)
+    data.to_csv('spyur_data_esthetic.csv',index=False)
