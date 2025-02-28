@@ -1,29 +1,27 @@
-import pandas as pd
-import os
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
-# Specify the directory containing the CSV files
-csv_directory = 'csvs'
+# Set up the Selenium WebDriver
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
 
-# List all files in the directory
-files = os.listdir(csv_directory)
+# Open the Wikipedia page
+url = "https://simple.wikipedia.org/wiki/List_of_countries"
+driver.get(url)
 
-# Initialize an empty list to store DataFrames
-df_list = []
+# Find the section with class "mf-section-1"
+sections = driver.find_elements(By.CLASS_NAME, "mf-section-1")
 
-# Loop over the files
-for file in files:
-    # Check if the file is a CSV file
-    if file.endswith('.csv'):
-        # Read the CSV file into a DataFrame
-        df = pd.read_csv(os.path.join(csv_directory, file))
-        df['Category']=file
-        # Append the DataFrame to the list
-        df_list.append(df)
+# Initialize an empty list to store the split values
+split_values = []
 
-# Concatenate all DataFrames in the list into a single DataFrame
-combined_df = pd.concat(df_list, ignore_index=True)
+# Extract and split the text from each section
+for section in sections:
+    text = section.text.strip()  # Get text and remove extra spaces
+    if text:  # Ensure the text is not empty
+        split_values.extend(text.split(" - "))  # Split by " - " and add to list
 
-# Save the combined DataFrame to an Excel file
-combined_df.to_excel('combined_data.xlsx', index=False)
-
-print("Data has been successfully saved to 'combined_data.xlsx'.")
+# Print the split values
+print(split_values)
